@@ -132,7 +132,7 @@ def _get_ordered_active_dataset_versions(context, data_dict, child_names):
 def _get_version(dataset):
     try:
         version_number = int(dataset['version'])
-    except ValueError:
+    except (ValueError, TypeError):
         version_number = 0
 
     return version_number
