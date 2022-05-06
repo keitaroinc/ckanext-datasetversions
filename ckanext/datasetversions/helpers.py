@@ -1,3 +1,5 @@
+from werkzeug.datastructures import FileStorage as FlaskFileStorage
+
 def list(package):
     return package['_versions']
 
@@ -33,3 +35,12 @@ def get_context(context):
         new_context['validate'] = context['validate']
 
     return new_context
+
+
+class TemporaryFileStorage(FlaskFileStorage):
+    content_type = None
+
+    def __init__(self, stream, filename):
+        self.stream = stream
+        self.filename = filename
+        self.name = u"upload"

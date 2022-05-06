@@ -17,7 +17,8 @@ class DatasetversionsPlugin(plugins.SingletonPlugin):
         return {
             'ckan_package_show': get.ckan_package_show,
             'package_show': get.package_show,
-            'dataset_version_create': create.dataset_version_create
+            'dataset_version_create': create.dataset_version_create,
+            'new_version': create.new_version
         }
 
     # IConfigurer
