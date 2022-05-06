@@ -1,8 +1,8 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
-import ckanext.datasetversions.logic.action.create
-import ckanext.datasetversions.logic.action.get
+from ckanext.datasetversions.logic.action import create
+from ckanext.datasetversions.logic.action import get
 import ckanext.datasetversions.helpers as helpers
 
 
@@ -15,12 +15,9 @@ class DatasetversionsPlugin(plugins.SingletonPlugin):
     # IActions
     def get_actions(self):
         return {
-            'ckan_package_show':
-            ckanext.datasetversions.logic.action.get.ckan_package_show,
-            'package_show':
-            ckanext.datasetversions.logic.action.get.package_show,
-            'dataset_version_create':
-            ckanext.datasetversions.logic.action.create.dataset_version_create,
+            'ckan_package_show': get.ckan_package_show,
+            'package_show': get.package_show,
+            'dataset_version_create': create.dataset_version_create
         }
 
     # IConfigurer
