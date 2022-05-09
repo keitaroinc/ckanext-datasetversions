@@ -1,13 +1,12 @@
-import io
 import re
-import urllib.request
-import six
 
 import ckan.logic as logic
 from ckan.logic.action.get import package_show as ckan_package_show
 from ckan.plugins import toolkit
 
-from ckanext.datasetversions.helpers import get_context, TemporaryFileStorage
+from ckanext.datasetversions.helpers import get_context
+from ckanext.datasetversions.lib import compat_enqueue
+from ckanext.datasetversions.tasks import transfer_resource
 
 
 _check_access = logic.check_access
@@ -84,10 +83,7 @@ def new_version(context, data_dict):
         version = 1
     else:
         version = int(version) + 1
-    print('---------> VERSION', version)
 
-    # TODO: Create a new dataset with copies of all the resources of
-    # the previous version
     name = dataset['name']
     if version == 1:
         new_name = name + '-v1'
@@ -111,46 +107,15 @@ def new_version(context, data_dict):
 
     dataset['name'] = new_name
     dataset['version'] = version
-    # The resource need to be reUPLOADED because this is just
-    # the same resource so if you change it in the verson it will change
-    # it in the previous version which should not be the case
 
-    # Expected behaivaour:
-    # create a new dataset with the same resources but,
-    # the resources should be new (seperate resource)
     new_dataset = toolkit.get_action('package_create')(
                   get_context(context), dataset)
 
+    user = context.get('user')
+    queue = 'default'
     for resource in resources:
-        url = resource.pop('url')
-        print(url)
-        print("TUKA=========================")
-        # Download the file from `url` and save it locally under `tmp_file`:
-        try:
-            response = urllib.request.urlopen(
-                url)
-        except Exception as e:
-            print(e)
-        print("TUKA++++++++++++++++++++++++++")
-
-        filename = url.rsplit('/', 1)[-1]
-        data = six.ensure_binary(response.read())
-        buffer = io.BytesIO(data)
-        out_file = TemporaryFileStorage(buffer, filename)
-
-        resource.pop('id')
-        # # Change the "id" to the "id" of the "new datset"
-        resource.pop('package_id')
-        resource['package_id'] = new_dataset['id']
-
-        resource['upload'] = out_file
-
-        try:
-            toolkit.get_action('resource_create')(
-                get_context(context), resource)
-        except Exception as e:
-            print("EXCEPTION")
-            print(e)
+        compat_enqueue(transfer_resource, queue,
+                       args=[resource, new_dataset['id'], user])
 
     # Create the new version with releationship as "type": "child_of"
     toolkit.get_action('dataset_version_create')(
