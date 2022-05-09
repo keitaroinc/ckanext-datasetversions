@@ -79,7 +79,8 @@ def new_version(context, data_dict):
 
     # get version
     version = dataset.get('version', None)
-    if version is None:
+
+    if version is None or version =="":
         version = 1
     else:
         version = int(version) + 1
@@ -101,7 +102,11 @@ def new_version(context, data_dict):
     # remove "id", "name" and "version" so we can change them appropriately
     dataset.pop('id')
     dataset.pop('name')
-    dataset.pop('version')
+    try:
+        dataset.pop('version')
+    except KeyError:
+        pass
+
     # Remove the resources and they will be uploaded seperatly
     resources = dataset.pop('resources')
 
