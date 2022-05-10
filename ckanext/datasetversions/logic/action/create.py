@@ -94,7 +94,7 @@ def new_version(context, data_dict):
         ver_num = m.group()
         # Split the name on the version
         # ex. test-v2 ---> test-v
-        name = name.split(ver_num, 1)[0]
+        name = name.rsplit(ver_num, 1)[0]
         # Add the number+1 to the end of the new name
         new_ver_num = str(int(ver_num) + 1)
         new_name = name + new_ver_num
