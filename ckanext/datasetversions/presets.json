@@ -1,0 +1,15 @@
+{
+    "scheming_presets_version": 2,
+    "about": "extra scheming field presets",
+    "about_url": "https://github.com/keitaroinc/ckanext-datasetversions",
+    "presets": [
+        {
+            "preset_name": "versions",
+            "values": {
+                "form_snippet": "versions.html",
+                "display_snippet": null,
+                "validators": "ignore_missing unicode_safe package_version_validator"
+            }
+        }
+    ]
+}
