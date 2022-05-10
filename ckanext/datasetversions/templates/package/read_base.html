@@ -6,7 +6,7 @@
       {% set versions=h.datasetversions_list(pkg) %}
       {% if versions|length > 1 %}
   <section class="module module-narrow module-shallow">
-    <h2 class="module-heading"><i class="icon-medium icon-calendar"></i> {{ _('Versions') }}</h2>
+    <h2 class="module-heading"><i class="fa fa-list-ol"></i> {{ _('Versions') }}</h2>
     <ul class="nav nav-simple dataset-version-list">
         {% for version, url in versions %}
       <li class="nav-item">{% link_for version, 'dataset.read', id=version %}</li>
