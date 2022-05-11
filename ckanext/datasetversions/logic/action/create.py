@@ -6,7 +6,7 @@ from ckan.plugins import toolkit
 
 from ckanext.datasetversions.helpers import get_context
 from ckanext.datasetversions.lib import compat_enqueue
-from ckanext.datasetversions.tasks import transfer_resource
+from ckanext.datasetversions.tasks import transfer_resources
 
 
 _check_access = logic.check_access
@@ -75,12 +75,12 @@ def new_version(context, data_dict):
     # The overwritten action from "ckanext-dataversions"
     # We need the parents "ID" to get the latest version
     dataset = toolkit.get_action('package_show')(
-        get_context(context), {"id": parent})
+            get_context(context), {"id": id})
 
     # get version
     version = dataset.get('version', None)
 
-    if version is None or version =="":
+    if version is None or version == "":
         version = 1
     else:
         version = int(version) + 1
@@ -118,17 +118,8 @@ def new_version(context, data_dict):
 
     user = context.get('user')
     queue = 'default'
-    for resource in resources:
-        compat_enqueue(transfer_resource, queue,
-                       args=[resource, new_dataset['id'], user])
 
-    # Create the new version with releationship as "type": "child_of"
-    toolkit.get_action('dataset_version_create')(
-        get_context(context), {
-            'id': new_dataset['id'],
-            'base_name': parent,
-            'owner_org': dataset['organization']['id']
-        }
-    )
+    compat_enqueue(transfer_resources, queue,
+                   args=[resources, new_dataset['id'], parent, user])
 
     return new_dataset
