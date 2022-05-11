@@ -12,15 +12,17 @@ from ckanext.datasetversions.helpers import TemporaryFileStorage
 log = logging.getLogger(__name__)
 
 
-def transfer_resources(resources, package_id,
-                       parent, user, queue='default'):
+def transfer_resources(resources, package_id, parent,
+                       user, auth_key, queue='default'):
     context_ = {'model': model, 'user': user, 'session': model.Session}
     for resource in resources:
         url = resource.pop('url')
         log.info(f"Downloading resource form {url}")
         # Download the file from `url` and save it locally under `tmp_file`:
         try:
-            response = urllib.request.urlopen(url)
+            res_url = urllib.request.Request(url)
+            res_url.add_header('Authorization', auth_key)
+            response = urllib.request.urlopen(res_url)
             filename = url.rsplit('/', 1)[-1]
             data = six.ensure_binary(response.read())
             buffer = io.BytesIO(data)
