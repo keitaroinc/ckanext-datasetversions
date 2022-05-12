@@ -4,11 +4,13 @@
 {% block content_action %}
   {% if not is_activity_archive %}
     {% if h.check_access('package_update', {'id':pkg.id }) %}
+    {% if not h.datasetversions_is_old(pkg)%}
       <form id="dataset-version" method="post" action="{% url_for('datasetversions.create'), package_id=pkg_dict.id %}">
       <button form="dataset-version"class="btn btn-default" type="submit" data-module="confirm-action" data-module-with-data=true
         data-module-content="{{ _('Are you sure you want to create a new version?') }}">{{_("New Version")}}</button>
       {% link_for _('Manage'), named_route=pkg.type ~ '.edit', id=pkg.name, class_='btn btn-default', icon='wrench' %}
       </form>
+    {% endif %}
     {% endif %}
   {% endif %}
 {% endblock %}
