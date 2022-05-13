@@ -55,7 +55,18 @@ def _get_or_create_parent_dataset(context, data_dict):
 
 
 def new_version(context, data_dict):
+    """Create a new dataset whitch is linked to the parent dataset.
 
+    You must be authorized to create datasets.
+    You must be authorized to edit both the subject and the object datasets.
+
+    :param subject: the id of the dataset that is the subject of the
+        relationship
+    :type subject: string
+
+    :returns: the newly created dataset
+    :rtype: dictionary
+    """
     _check_access('package_create', context, data_dict)
     id = data_dict.get('id')
 
