@@ -106,14 +106,20 @@ def _get_names_from_relationships(relationships):
 def _get_ordered_active_dataset_versions(context, data_dict,
                                          base_name, child_names):
     versions = []
-    parrent = ckan_package_show(context, {"id": base_name})
-    if parrent['state'] == 'active':
-        versions.append(parrent)
+    try:
+        parrent = ckan_package_show(context, {"id": base_name})
+        if parrent['state'] == 'active':
+            versions.append(parrent)
+    except Exception:
+        pass
     for name in child_names:
         data_dict['id'] = name
-        version = ckan_package_show(context, data_dict)
-        if version['state'] == 'active':
-            versions.append(version)
+        try:
+            version = ckan_package_show(context, data_dict)
+            if version['state'] == 'active':
+                versions.append(version)
+        except Exception:
+            pass
 
     versions.sort(key=_get_version, reverse=True)
 
