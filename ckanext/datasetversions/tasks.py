@@ -21,7 +21,8 @@ def transfer_resources(resources, package_id, parent,
         # Download the file from `url` and save it locally under `tmp_file`:
         try:
             res_url = urllib.request.Request(url)
-            res_url.add_header('Authorization', auth_key)
+            if auth_key:
+                res_url.add_header('Authorization', auth_key)
             response = urllib.request.urlopen(res_url)
             filename = url.rsplit('/', 1)[-1]
             data = six.ensure_binary(response.read())

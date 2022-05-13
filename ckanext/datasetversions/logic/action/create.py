@@ -128,11 +128,11 @@ def new_version(context, data_dict):
                   get_context(context), dataset)
 
     user = context.get('user')
-    auth_key = context.get('auth_user_obj')
+    auth_key = context.get('auth_user_obj')['apikey']
     queue = 'default'
 
     compat_enqueue(transfer_resources, queue,
                    args=[resources, new_dataset['id'],
-                         parent, user, auth_key.apikey])
+                         parent, user, auth_key])
 
     return new_dataset
