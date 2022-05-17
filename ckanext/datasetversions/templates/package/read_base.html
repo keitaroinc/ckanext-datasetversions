@@ -1,18 +1,36 @@
 {% ckan_extends %}
 
+
+{% block content_action %}
+  {% if not is_activity_archive %}
+    {% if h.check_access('package_update', {'id':pkg.id }) %}
+      <form id="dataset-version" method="post" action="{% url_for('datasetversions.create'), package_id=pkg_dict.id %}">
+        {% if not h.datasetversions_is_old(pkg)%}
+      <button form="dataset-version"class="btn btn-default" type="submit"
+        data-module="confirm-action" data-module-with-data=true
+        data-module-content="{{ _('Creating a new version creates a duplicate dataset of this version. 
+        This is useful to store and display together different versions of a dataset. 
+        Are you sure you want to create a new version?') }}">{{_("New Version")}}</button>
+        {% endif %}
+      {% link_for _('Manage'), named_route=pkg.type ~ '.edit', id=pkg.name, class_='btn btn-default', icon='wrench' %}
+      </form>
+    {% endif %}
+  {% endif %}
+{% endblock %}
+
   {% block package_info %}
     {{ super() }}
     {% if pkg %}
       {% set versions=h.datasetversions_list(pkg) %}
-      {% if versions %}
-  <section class="module module-narrow module-shallow">
-    <h2 class="module-heading"><i class="icon-medium icon-calendar"></i> {{ _('Versions') }}</h2>
+      {% if versions|length > 1 %}
+  <div class="module module-narrow module-shallow context-info">
+    <h2 class="module-heading"><i class="fa fa-list-ol"></i> {{ _('Versions') }}</h2>
     <ul class="nav nav-simple dataset-version-list">
-        {% for version, url in versions %}
-      <li class="nav-item">{% link_for version, 'dataset.read', id=url %}</li>
-        {% endfor %}
+      {% for version, url in versions %}
+      <li class="nav-item">{% link_for version, 'dataset.read', id=version %}</li>
+      {% endfor %}
     </ul>
-  </section>
+  </div>
       {% endif %}
     {% endif %}
   {% endblock %}

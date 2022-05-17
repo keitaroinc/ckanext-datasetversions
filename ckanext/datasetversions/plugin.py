@@ -1,9 +1,10 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
-import ckanext.datasetversions.logic.action.create
-import ckanext.datasetversions.logic.action.get
+from ckanext.datasetversions.logic.action import create
+from ckanext.datasetversions.logic.action import get
 import ckanext.datasetversions.helpers as helpers
+from ckanext.datasetversions.blueprints import datasetversions
 
 
 class DatasetversionsPlugin(plugins.SingletonPlugin):
@@ -11,16 +12,15 @@ class DatasetversionsPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IPackageController)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IBlueprint)
 
     # IActions
     def get_actions(self):
         return {
-            'ckan_package_show':
-            ckanext.datasetversions.logic.action.get.ckan_package_show,
-            'package_show':
-            ckanext.datasetversions.logic.action.get.package_show,
-            'dataset_version_create':
-            ckanext.datasetversions.logic.action.create.dataset_version_create,
+            'ckan_package_show': get.ckan_package_show,
+            'package_show': get.package_show,
+            'dataset_version_create': create.dataset_version_create,
+            'new_version': create.new_version
         }
 
     # IConfigurer
@@ -28,6 +28,10 @@ class DatasetversionsPlugin(plugins.SingletonPlugin):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'datasetversions')
+
+    # IBlueprint
+    def get_blueprint(self):
+        return [datasetversions]
 
     # IPackageController
     def read(self, entity):

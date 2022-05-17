@@ -1,0 +1,19 @@
+{% import 'macros/form.html' as form %}
+
+{% set ver_num = (data.get('version')) %}
+
+    {% if ver_num %}
+        {% call form.input(
+            field.field_name,
+            id='field-' + field.field_name,
+            label= h.scheming_language_text(field.label),
+            value=ver_num,
+            error=errors[field.field_name],
+            classes=['control-medium hidden'],
+            attrs=dict({"class": "form-control"}, **(field.get('form_attrs', {}))),
+            is_required=h.scheming_field_required(field)
+            )
+        %}
+    {% endcall %}
+
+{% endif %}
