@@ -1,7 +1,7 @@
 from werkzeug.datastructures import FileStorage as FlaskFileStorage
 
 def list(package):
-    return package['_versions']
+    return package.get('_versions', [])
 
 
 def is_old(package):
