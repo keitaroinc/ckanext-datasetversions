@@ -25,9 +25,9 @@
         This is useful to store and display together different versions of a dataset.
         Are you sure you want to create a new version?') }}">{{_("New Version")}}</button>
         {% endif %}
-      {% link_for _('Manage'), named_route=pkg.type ~ '.edit', id=pkg.name, class_='btn btn-default', icon='wrench' %}
       </form>
     {% endif %}
+    {{ super() }}
   {% endif %}
 {% endblock %}
 
